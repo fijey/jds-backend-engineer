@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "workspaces": [
+    "auth-app",
+    "fetch-app"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "auth": "npm run --workspace auth-app",
+    "test": "npm run --workspaces test"
+  }
+}
