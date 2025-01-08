@@ -1,3 +1,4 @@
 auth-app/node_modules
+auth-app/dist
 auth-app/.env
 node_modules
