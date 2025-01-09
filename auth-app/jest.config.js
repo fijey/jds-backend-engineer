@@ -8,5 +8,9 @@ module.exports = {
     "@controllers/(.*)": "<rootDir>/src/controllers/$1",
     "@routes/(.*)": "<rootDir>/src/routes/$1"
   },
-  setupFiles: ['dotenv/config']
+  setupFiles: ['dotenv/config'],
+  setupFilesAfterEnv: ['./__test__/setup.ts'],
+  testEnvironmentVariables: {
+    NODE_ENV: 'test'
+  }
 };

@@ -36,10 +36,17 @@ describe('Auth Controller', () => {
         });
 
         it('should return 400 if NIK is already registered', async () => {
+            await request(app)
+                .post('/api/register')
+                .send({
+                    nik: '1234567890123456',
+                    role: 'user'
+                });
             const response = await request(app)
                 .post('/api/register')
                 .send({
                     nik: '1234567890123456',
+                    password: 'password123',
                     role: 'user'
                 });
             expect(response.status).toBe(400);
@@ -104,20 +111,41 @@ describe('Auth Controller', () => {
         });
 
         it('should return private claims', async () => {
-            const responseLogin = await request(app)
-            .post('/api/login')
-            .send({
-                nik: '0987654321098765',
-                password: 'password'
-            });
-            
-            const response = await request(app)
-                .get('/api/private-claims')
-                .set('Authorization', `Bearer ${responseLogin.body.data.token}`);
+            const testNik = '1234567890123456';
+            let testPassword = '';
 
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe('private claims');
-            expect(response.body.data.nik).toBe('0987654321098765');
+            // Register user
+            const registerResponse = await request(app)
+                .post('/api/register')
+                .send({
+                    nik: testNik,
+                    role: 'user'
+                });
+            testPassword = registerResponse.body.data.password;
+
+            // Login user
+            const loginResponse = await request(app)
+                .post('/api/login')
+                .send({
+                    nik: testNik,
+                    password: testPassword
+                });
+
+
+            expect(loginResponse.status).toBe(200);
+            expect(loginResponse.body.data.token).toBeDefined();
+
+            
+            // Access private claims
+            const privateClaimsResponse = await request(app)
+                .get('/api/private-claims')
+                .set('Authorization', `Bearer ${loginResponse.body.data.token}`);
+
+            // Verify response
+            expect(privateClaimsResponse.status).toBe(200);
+            expect(privateClaimsResponse.body.message).toBe(AUTH_MESSAGES.SUCCESS.PRIVATE_CLAIMS);
+            expect(privateClaimsResponse.body.data.nik).toBe(testNik);
+            expect(privateClaimsResponse.body.data.role).toBe('user');
         });
     });
 });

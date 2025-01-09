@@ -103,7 +103,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 export const privateClaims = async (req: Request, res: Response): Promise<Response> => {
     try {
         return res.status(200).json({
-            message: 'private claims',
+            message: AUTH_MESSAGES.SUCCESS.PRIVATE_CLAIMS,
             data: req.user || {}
         });
     } catch (err: any) {
