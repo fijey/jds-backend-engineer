@@ -25,4 +25,7 @@ $router->group(['middleware' => ['jwt']], function () use ($router) {
             'message' => 'API is working'
         ]);
     });
+
+    $router->get('/data', 'Controller@index');
+
 });
