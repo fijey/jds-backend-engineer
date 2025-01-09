@@ -26,14 +26,6 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
-// Register Service Providers
-$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
-$app->register(MongoDB\Laravel\MongoDBServiceProvider::class);
-
-// Configure
-$app->configure('jwt');
-$app->configure('database');
-
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -83,9 +75,9 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'jwt' => App\Http\Middleware\JwtMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
