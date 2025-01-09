@@ -8,6 +8,13 @@ import { authResponse } from '../types/auth.types';
 export const register = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { nik, role } = req.body;
+
+        if (nik.length !== 16) {
+            return res.status(400).json({
+                message: 'NIK must be 16 characters'
+            });
+        }
+
         const password = generatePassword({
             length: 6,
             numbers: true,
@@ -53,14 +60,18 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         const { nik, password } = req.body;
     
         const user = await UserModel.findOne({ nik });
-
+        
+        if (nik.length !== 16) {
+            return res.status(400).json({
+                message: 'NIK must be 16 characters'
+            });
+        }
+        
         if (!user) {
             return res.status(400).json({
                 message: 'credential not match'
             });
         }
-
-        console.log('truth password', user.password);
     
         if (!bcrypt.compareSync(password, user.password)) {
             return res.status(400).json({
