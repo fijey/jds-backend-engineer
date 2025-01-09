@@ -1,14 +1,22 @@
 import { Request, Response } from 'express';
-import { UserModel } from '@models/user.model';
 import { generatePassword } from '@/utils/global';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AuthResponse } from '@/types/auth.types';
 import { AUTH_MESSAGES } from '@/constant/auth.constant';
+import { User } from '@/types/user.types';
+
+
+const users: User[] = [];
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { nik, role } = req.body;
+        const id = generatePassword({
+            length: 10,
+            numbers: true,
+            letters: false,
+            symbols: false
+        });
 
         if (nik.length !== 16) {
             return res.status(400).json({
@@ -22,22 +30,20 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             letters: false,
             symbols: false
         });
-
-        const hashPassword = bcrypt.hashSync(password, 10);
-
     
-        const user = new UserModel({
+        const user: User = {
+            id: parseInt(id),
             nik,
-            password: hashPassword,
+            password,
             role
-        });
+        };
+
+        users.push(user);
 
         const responseData = {
-            ...user.toJSON(),
+            ...user,
             password
         }
-    
-        await user.save();
         
         return res.status(201).json({
             message: AUTH_MESSAGES.SUCCESS.REGISTERED,
@@ -59,8 +65,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 export const login = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { nik, password } = req.body;
-    
-        const user = await UserModel.findOne({ nik });
+
+        const user = users.find(u => u.nik === nik && u.password === password);
         
         if (nik.length !== 16) {
             return res.status(400).json({
@@ -73,15 +79,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
                 message: AUTH_MESSAGES.ERRORS.INVALID_CREDENTIAL
             });
         }
-    
-        if (!bcrypt.compareSync(password, user.password)) {
-            return res.status(400).json({
-                message: AUTH_MESSAGES.ERRORS.INVALID_CREDENTIAL
-            });
-        }
 
         const token = jwt.sign({nik: user?.nik, role: user?.role}, process.env.JWT_SECRET || '', {expiresIn: '1h'});
-        const {password: _, ...userWithoutPassword} = user.toJSON();
+        const {password: _, ...userWithoutPassword} = user;
 
         const authResponse: AuthResponse = {
             message: AUTH_MESSAGES.SUCCESS.LOGIN,
