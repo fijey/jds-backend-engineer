@@ -7,7 +7,7 @@ import authRoutes from "@routes/auth.routes";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(express.json());
