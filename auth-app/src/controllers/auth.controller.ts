@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../models/user.model';
 import { generatePassword } from '@/utils/global';
+import bcrypt from 'bcryptjs';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -12,18 +13,25 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             symbols: false
         });
 
+        const hashPassword = bcrypt.hashSync(password, 10);
+
     
         const user = new UserModel({
             nik,
-            password,
+            password: hashPassword,
             role
         });
+
+        const responseData = {
+            ...user.toJSON(),
+            password
+        }
     
         await user.save();
         
         return res.status(201).json({
             message: 'User Registered',
-            data: user
+            data: responseData
         });
     } catch (err: any) {
         if (err.code === 11000) {
@@ -36,3 +44,26 @@ export const register = async (req: Request, res: Response): Promise<Response> =
         });
     }
 };
+
+export const login = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { nik, password } = req.body;
+    
+        const user = await UserModel.findOne({ nik });
+    
+        if (user && user.password !== password) {
+            return res.status(400).json({
+                message: 'credential not match'
+            });
+        }
+    
+        return res.status(200).json({
+            message: 'Login success',
+            data: user
+        });
+    } catch (err: any) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
