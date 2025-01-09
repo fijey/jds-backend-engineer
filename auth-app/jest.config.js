@@ -9,7 +9,6 @@ module.exports = {
     "@routes/(.*)": "<rootDir>/src/routes/$1"
   },
   setupFiles: ['dotenv/config'],
-  setupFilesAfterEnv: ['./__test__/setup.ts'],
   testEnvironmentVariables: {
     NODE_ENV: 'test'
   }

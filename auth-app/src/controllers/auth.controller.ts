@@ -38,6 +38,11 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             role
         };
 
+        //validation nik already registered
+        if (users.find(u => u.nik === nik)) {
+            throw { code: 11000 };
+        }
+
         users.push(user);
 
         const responseData = {

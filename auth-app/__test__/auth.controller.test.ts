@@ -1,14 +1,8 @@
 import request from 'supertest';
 import { app } from '../app';
-import { UserModel } from '@/models/user.model';
 import { AUTH_MESSAGES } from '@/constant/auth.constant';
-import bcrypt from 'bcryptjs';
 
 describe('Auth Controller', () => {
-    beforeAll(async () => {
-        await UserModel.deleteMany({});
-    });
-
     describe('POST /api/register', () => {
         it('should return 400 if NIK length is not 16', async () => {
             const response = await request(app)
@@ -46,7 +40,6 @@ describe('Auth Controller', () => {
                 .post('/api/register')
                 .send({
                     nik: '1234567890123456',
-                    password: 'password123',
                     role: 'user'
                 });
             expect(response.status).toBe(400);
@@ -92,17 +85,18 @@ describe('Auth Controller', () => {
         });
 
         it('should login successfully', async () => {
-            await UserModel.create({
-                nik: '0987654321098765',
-                password: bcrypt.hashSync('password', 10),
-                role: 'user'
+            const registerResponse = await request(app)
+            .post('/api/register')
+            .send({
+                nik: '1122334455667788',
+                role: 'admin'
             });
 
             const response = await request(app)
                 .post('/api/login')
                 .send({
-                    nik: '0987654321098765',
-                    password: 'password'
+                    nik: '1122334455667788',
+                    password: registerResponse.body.data.password
                 });
 
             expect(response.status).toBe(200);
@@ -111,7 +105,7 @@ describe('Auth Controller', () => {
         });
 
         it('should return private claims', async () => {
-            const testNik = '1234567890123456';
+            const testNik = '8877665544332211';
             let testPassword = '';
 
             // Register user
