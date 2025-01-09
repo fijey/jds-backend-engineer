@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/user.model';
 import { generatePassword } from '@/utils/global';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { authResponse } from '../types/auth.types';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -45,21 +47,52 @@ export const register = async (req: Request, res: Response): Promise<Response> =
     }
 };
 
+
 export const login = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { nik, password } = req.body;
     
         const user = await UserModel.findOne({ nik });
-    
-        if (user && user.password !== password) {
+
+        if (!user) {
             return res.status(400).json({
                 message: 'credential not match'
             });
         }
+
+        console.log('truth password', user.password);
     
-        return res.status(200).json({
+        if (!bcrypt.compareSync(password, user.password)) {
+            return res.status(400).json({
+                message: 'credential not match'
+            });
+        }
+
+        const token = jwt.sign({nik: user?.nik, role: user?.role}, process.env.JWT_SECRET || '', {expiresIn: '1h'});
+        const {password: _, ...userWithoutPassword} = user.toJSON();
+
+        const authResponse: authResponse = {
             message: 'Login success',
-            data: user
+            data: {
+                user: userWithoutPassword,
+                token,
+                type: 'Bearer'
+            }
+        }
+        
+        return res.status(200).json(authResponse);
+    } catch (err: any) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+export const privateClaims = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        return res.status(200).json({
+            message: 'private claims',
+            data: req.user || {}
         });
     } catch (err: any) {
         return res.status(500).json({
