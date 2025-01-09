@@ -28,7 +28,7 @@ $app->withEloquent();
 
 // Register Service Providers
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
-$app->register(Jenssegers\Mongodb\MongodbServiceProvider::class);
+$app->register(MongoDB\Laravel\MongoDBServiceProvider::class);
 
 // Configure
 $app->configure('jwt');
