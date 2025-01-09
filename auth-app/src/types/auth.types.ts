@@ -1,4 +1,4 @@
-export interface authResponse {
+export interface AuthResponse {
     message: string;
     data?: {
         user: {
@@ -8,4 +8,9 @@ export interface authResponse {
         token: string;
         type: 'Bearer';
     };
+}
+
+export interface TokenPayload {
+    nik: string;
+    role: string;
 }
