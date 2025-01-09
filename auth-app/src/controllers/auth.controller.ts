@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
 import { UserModel } from '../models/user.model';
+import { generatePassword } from '@/utils/global';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { nik, password, role } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const { nik, role } = req.body;
+        const password = generatePassword({
+            length: 6,
+            numbers: true,
+            letters: false,
+            symbols: false
+        });
+
     
         const user = new UserModel({
             nik,
-            password: hashedPassword,
+            password,
             role
         });
     
