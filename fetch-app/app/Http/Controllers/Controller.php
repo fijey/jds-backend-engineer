@@ -5,7 +5,15 @@ namespace App\Http\Controllers;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use OpenApi\Annotations as OA;
 
+/**
+ * 
+ * @OA\Server(
+ *     url="http://localhost:8000"
+ * )
+ * 
+ */
 class Controller extends BaseController 
 {
     protected $productService;
@@ -15,6 +23,22 @@ class Controller extends BaseController
         $this->productService = $productService;
     }
 
+     /**
+     * @OA\Get(
+     *     path="/api/data",
+     *     summary="Get all products",
+     *     tags={"Products"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
         try {
@@ -32,6 +56,27 @@ class Controller extends BaseController
             ], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/data-admin",
+     *     summary="Get aggregated product data (Admin only)",
+     *     tags={"Products"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function index_admin() {
         try {
             $aggregatedProducts = $this->productService->getAggregatedProducts();
@@ -48,6 +93,23 @@ class Controller extends BaseController
             ], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/private-claims",
+     *     summary="Show the Private Claims data",
+     *     tags={"privateclaims"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function private_claims(Request $request) {
         try {
             $privateClaims = $request->attributes->get('decodedToken');
