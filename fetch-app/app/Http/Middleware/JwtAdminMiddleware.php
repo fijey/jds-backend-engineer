@@ -6,10 +6,11 @@ use Closure;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Exception;
+use Illuminate\Http\Request;
 
 class JwtAdminMiddleware
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $token = $request->bearerToken();
 

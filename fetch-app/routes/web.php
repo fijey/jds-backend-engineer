@@ -25,6 +25,9 @@ $router->group(['middleware' => ['jwt']], function () use ($router) {
 
 $router->group(['middleware' => ['jwt.admin']], function () use ($router) {
     $router->get('/data-admin', 'Controller@index_admin');
+});
 
+$router->group(['middleware' => ['jwt.admin', 'jwt']], function () use ($router) {
+    $router->get('/private-claims', 'Controller@private_claims');
 });
 
