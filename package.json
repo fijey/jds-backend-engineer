@@ -11,8 +11,17 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "auth": "npm run --workspace auth-app",
-    "fetch": "cd fetch-app && php -S localhost:8000 -t public",
+    
+    "auth:serve": "npm run --workspace auth-app start",
+    "auth:install": "cd auth-app && npm install",
+    "auth:dev": "npm run --workspace auth-app dev",
+    
+    "fetch:serve": "cd fetch-app && php -S localhost:8000 -t public",
+    "fetch:install": "cd fetch-app && composer install",
+    "fetch:dev": "cd fetch-app && php artisan serve",
+    
+    "dev": "npm run fetch:dev & npm run auth:dev",
+    "install-all": "npm run auth:install && npm run fetch:install",
     "test": "npm run --workspaces test"
   }
 }
