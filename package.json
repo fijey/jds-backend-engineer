@@ -37,7 +37,7 @@
     "test": "npm run --workspaces test",
     
     "setup:env:auth": "cp auth-app/.env.example auth-app/.env && echo 'JWT_SECRET=inisangatsecretsehinggatidakbolehdiberitahupadabanyakorang20' > auth-app/.env",
-    "setup:env:fetch": "cp fetch-app/.env.example fetch-app/.env && echo 'JWT_SECRET=inisangatsecretsehinggatidakbolehdiberitahupadabanyakorang20' >> fetch-app/.env",
+    "setup:env:fetch": "cp fetch-app/.env.example fetch-app/.env && echo 'JWT_SECRET=inisangatsecretsehinggatidakbolehdiberitahupadabanyakorang20\nAPILAYER_API_KEY=Jidg2afo4U90Bzbozk3zQCBY0mZ1TiEm' >> fetch-app/.env",
     "setup:env": "npm run setup:env:auth && npm run setup:env:fetch"
   }
 }
