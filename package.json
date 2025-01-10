@@ -18,7 +18,7 @@
     
     "fetch:serve": "cd fetch-app && php -S localhost:8000 -t public",
     "fetch:install": "cd fetch-app && composer install",
-    "fetch:dev": "cd fetch-app && php artisan serve",
+    "fetch:dev": "cd fetch-app && php -S localhost:8001 -t public",
     
     "dev": "npm run fetch:dev & npm run auth:dev",
     "install-all": "npm run auth:install && npm run fetch:install",
