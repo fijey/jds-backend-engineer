@@ -17,7 +17,8 @@ Welcome to the repository for becoming a **Backend Engineer** at Jabar Digital S
 3.  **Install dependencies**  
     Run the following command to install Husky dependencies:
     ```bash
-    npm install 
+    npm install
+    npm run setup:env
 4.  **Install all required packages**  
     Execute this script to install all necessary packages for both `npm` and `composer`:
     
