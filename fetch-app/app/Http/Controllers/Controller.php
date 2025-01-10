@@ -2,43 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use App\Services\ProductService;
 use Laravel\Lumen\Routing\Controller as BaseController;
-use App\Services\ConvertCurrencyServices;
-class Controller extends BaseController
+
+class Controller extends BaseController 
 {
-    private $client;
-    private $baseUrl = 'https://60c18de74f7e880017dbfd51.mockapi.io/api/v1/jabar-digital-services/product';
-    protected $currencyConverterService;
-    public function __construct()
+    protected $productService;
+
+    public function __construct(ProductService $productService)
     {
-        $this->client = new Client();
-        $this->currencyConverterService = new ConvertCurrencyServices();
+        $this->productService = $productService;
     }
 
     public function index()
     {
         try {
-            $response = $this->client->get($this->baseUrl);
-            $data = json_decode($response->getBody(), true);
-
-            $rate = $this->currencyConverterService->getUsdToIdrRate();
-
-            $products = array_map(function ($product) use ($rate) {
-                $product['price_idr'] = number_format($product['price'] * $rate, 2, ',', '.');
-                return $product;
-            }, $data);
-
+            $products = $this->productService->getAllProducts();
+            
             return response()->json([
-                'status' => 'success',
+                'status' => 'success', 
                 'data' => $products
             ], 200);
 
-        } catch (RequestException $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to fetch data: ' . $e->getMessage()
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function index_admin() {
+        try {
+            $aggregatedProducts = $this->productService->getAggregatedProducts();
+            
+            return response()->json([
+                'status' => 'success', 
+                'data' => $aggregatedProducts
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
             ], 500);
         }
     }

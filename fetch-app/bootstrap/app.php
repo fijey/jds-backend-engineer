@@ -77,6 +77,7 @@ $app->configure('app');
 
 $app->routeMiddleware([
     'jwt' => App\Http\Middleware\JwtMiddleware::class,
+    'jwt.admin' => App\Http\Middleware\JwtAdminMiddleware::class,
 ]);
 
 /*

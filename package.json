@@ -12,6 +12,7 @@
   "scripts": {
     "prepare": "husky install",
     "auth": "npm run --workspace auth-app",
+    "fetch": "cd fetch-app && php -S localhost:8000 -t public",
     "test": "npm run --workspaces test"
   }
 }

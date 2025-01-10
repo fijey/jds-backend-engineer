@@ -19,13 +19,12 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['middleware' => ['jwt']], function () use ($router) {
-    // Protected routes go here
-    $router->get('/test-connection', function () {
-        return response()->json([
-            'message' => 'API is working'
-        ]);
-    });
-
     $router->get('/data', 'Controller@index');
 
 });
+
+$router->group(['middleware' => ['jwt.admin']], function () use ($router) {
+    $router->get('/data-admin', 'Controller@index_admin');
+
+});
+
