@@ -19,6 +19,18 @@
     "fetch:serve": "cd fetch-app && php -S localhost:8000 -t public",
     "fetch:install": "cd fetch-app && composer install",
     "fetch:dev": "cd fetch-app && php -S localhost:8000 -t public",
+
+    "docker:auth:up": "docker compose -f auth-app/docker-compose.yml up -d",
+    "docker:auth:down": "docker compose -f auth-app/docker-compose.yml down",
+    "docker:auth:logs": "docker compose -f auth-app/docker-compose.yml logs -f",
+    
+    "docker:fetch:up": "docker compose -f fetch-app/docker-compose.yml up -d",
+    "docker:fetch:down": "docker compose -f fetch-app/docker-compose.yml down",
+    "docker:fetch:logs": "docker compose -f fetch-app/docker-compose.yml logs -f",
+    
+    "docker:up": "npm run docker:auth:up && npm run docker:fetch:up",
+    "docker:down": "npm run docker:auth:down && npm run docker:fetch:down",
+    "docker:logs": "npm run docker:auth:logs & npm run docker:fetch:logs",
     
     "dev": "npm run fetch:dev & npm run auth:dev",
     "install-all": "npm run auth:install && npm run fetch:install",

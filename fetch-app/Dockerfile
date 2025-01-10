@@ -32,6 +32,12 @@ RUN composer install
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www/storage
 
+# Set permissions for storage directory
+RUN mkdir -p /var/www/storage/logs
+RUN mkdir -p /var/www/storage/framework/views
+RUN chown -R www-data:www-data /var/www/storage
+RUN chmod -R 775 /var/www/storage
+
 EXPOSE 9000
 
 CMD ["php-fpm"]
